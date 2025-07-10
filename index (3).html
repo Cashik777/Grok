@@ -1,0 +1,206 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover the best Canadian online casinos with exclusive bonuses, secure payments, and 24/7 support. Claim your fortune today!">
+    <title>Best Canadian Online Casinos - Unlock Your Fortune</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <video autoplay muted loop class="hero-video">
+            <source src="https://example.com/videos/casino-bg.mp4" type="video/mp4">
+        </video>
+        <div class="hero-content">
+            <h1 class="hero-title">Unlock Your Fortune at the Best Canadian Online Casinos</h1>
+            <button class="cta-button">Claim Bonus</button>
+            <p class="registration-counter">1,297 players registered today!</p>
+        </div>
+    </section>
+
+    <!-- Top Casinos Block -->
+    <section class="casinos">
+        <div class="filter">
+            <button class="filter-btn active">Best Bonuses</button>
+            <button class="filter-btn">No Deposit</button>
+            <button class="filter-btn">Canada Only</button>
+        </div>
+        <div class="casino-grid">
+            <div class="casino-card">
+                <img src="https://example.com/images/royal-panda.png" alt="Royal Panda" class="casino-logo">
+                <h3>Royal Panda</h3>
+                <p>100% up to $1,000 + 50 Free Spins</p>
+                <span class="license">Licensed in Canada 🇨🇦</span>
+                <button class="play-now">Play Now</button>
+            </div>
+            <div class="casino-card">
+                <img src="https://example.com/images/spin-casino.png" alt="Spin Casino" class="casino-logo">
+                <h3>Spin Casino</h3>
+                <p>$1,500 Welcome Bonus</p>
+                <span class="license">Licensed in Canada 🇨🇦</span>
+                <button class="play-now">Play Now</button>
+            </div>
+            <div class="casino-card">
+                <img src="https://example.com/images/jackpot-city.png" alt="Jackpot City" class="casino-logo">
+                <h3>Jackpot City</h3>
+                <p>Up to $1,600 + 100 Free Spins</p>
+                <span class="license">Licensed in Canada 🇨🇦</span>
+                <button class="play-now">Play Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Feed -->
+    <section class="live-feed">
+        <h2>Recent Wins</h2>
+        <div class="feed-container" id="feed">
+            <div class="feed-item">Jessica R. just won $7,100 at Royal Panda 🎉</div>
+            <div class="feed-item">Michael S. won $4,200 at Spin Casino 🇨🇦</div>
+            <div class="feed-item">Emma L. hit $9,800 at Jackpot City! 💰</div>
+        </div>
+    </section>
+
+    <!-- Advantages -->
+    <section class="advantages">
+        <h2>Why Choose Us?</h2>
+        <div class="advantages-grid">
+            <div class="advantage">
+                <span class="icon">✅</span>
+                <p>100% Licensed Casinos</p>
+            </div>
+            <div class="advantage">
+                <span class="icon">🔒</span>
+                <p>Secure Deposits & Withdrawals</p>
+            </div>
+            <div class="advantage">
+                <span class="icon">🎁</span>
+                <p>Best Bonuses in Canada</p>
+            </div>
+            <div class="advantage">
+                <span class="icon">🇨🇦</span>
+                <p>24/7 Support in English & French</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="reviews">
+        <h2>What Players Say</h2>
+        <div class="review-grid">
+            <div class="review">
+                <img src="https://example.com/images/avatar1.jpg" alt="User Avatar" class="avatar">
+                <p>"Amazing bonuses and fast payouts!"</p>
+                <span>John D. 🇨🇦 - 5 ★★★★★</span>
+            </div>
+            <div class="review">
+                <img src="https://example.com/images/avatar2.jpg" alt="User Avatar" class="avatar">
+                <p>"Best casino selection in Canada!"</p>
+                <span>Sarah M. 🇨🇦 - 5 ★★★★★</span>
+            </div>
+            <div class="review">
+                <img src="https://example.com/images/avatar3.jpg" alt="User Avatar" class="avatar">
+                <p>"Super easy to claim bonuses!"</p>
+                <span>David L. 🇨🇦 - 4 ★★★★☆</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <h2>Frequently Asked Questions</h2>
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header">How to choose a casino?</button>
+                <div class="accordion-content">
+                    <p>Look for licensed casinos with great bonuses and secure payment methods, like the ones we recommend!</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header">Are payouts safe?</button>
+                <div class="accordion-content">
+                    <p>Yes, all our listed casinos use SSL encryption and are fully licensed for secure transactions.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header">Which bonuses are the best?</button>
+                <div class="accordion-content">
+                    <p>Check our curated list for no-deposit bonuses, free spins, and high match bonuses tailored for Canadians!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <p>Licensed by: MGA, UKGC</p>
+                <p>18+ | Responsible Gaming</p>
+                <p>Affiliate Disclaimer: We earn commissions from partner casinos.</p>
+            </div>
+            <div class="footer-section">
+                <p>Contact: support@casinofortune.ca</p>
+                <a href="#">Privacy Policy</a>
+            </div>
+            <div class="badges">
+                <img src="https://example.com/images/ssl-badge.png" alt="SSL Secure">
+                <img src="https://example.com/images/18plus.png" alt="18+">
+            </div>
+        </div>
+    </footer>
+
+    <!-- Live Chat Widget -->
+    <div class="live-chat" id="live-chat">
+        <p>Chat with us!</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
