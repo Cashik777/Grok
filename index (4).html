@@ -1,0 +1,246 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GoldenVault Premium CRM: Manage your casino players with cutting-edge tools, real-time analytics, and exclusive bonuses. Trusted by top iGaming professionals in Canada.">
+    <title>GoldenVault Premium CRM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- FOMO Bar -->
+    <div class="limited-offer pulse">
+        ⚡ LIMITED OFFER! 10 players get 300% bonus + 100 free spins today! 
+        <a href="#" class="claim-now">Claim Now</a> ⚡
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FFD700'/%3E%3Cpath d='M30,30 L70,70 M30,70 L70,30' stroke='%23000' stroke-width='8'/%3E%3C/svg%3E" alt="GoldenVault Logo">
+                <h1>GoldenVault CRM</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="icon icon-user"></i> Players</a></li>
+                    <li><a href="#"><i class="icon icon-deposit"></i> Deposits</a></li>
+                    <li><a href="#"><i class="icon icon-withdrawal"></i> Withdrawals</a></li>
+                    <li><a href="#"><i class="icon icon-bonus"></i> Bonuses</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Live Feed -->
+    <section class="live-feed">
+        <h2>Recent Player Activity</h2>
+        <div class="feed-container" id="feed">
+            <div class="feed-item">John D. just deposited $1,200! 🎉</div>
+            <div class="feed-item">Marie C. claimed a VIP bonus! 🇨🇦</div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <div class="container">
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="user-profile">
+                    <img src="https://i.pravatar.cc/80?img=5" alt="User" class="user-avatar">
+                    <h3 class="user-name">Admin User</h3>
+                    <span class="user-status">ADMIN</span>
+                </div>
+                <div class="menu">
+                    <div class="menu-item active"><i>📊</i> Dashboard</div>
+                    <div class="menu-item"><i>👤</i> Players</div>
+                    <div class="menu-item"><i>💵</i> Deposits</div>
+                    <div class="menu-item"><i>🏦</i> Withdrawals</div>
+                    <div class="menu-item"><i>🎁</i> Bonuses</div>
+                    <div class="menu-item"><i>🛡️</i> Fraud Detection</div>
+                    <div class="menu-item"><i>🌐</i> Languages</div>
+                    <div class="menu-item"><i>⚙️</i> Settings</div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="section-header">
+                    <h2 class="section-title">Dashboard Overview</h2>
+                    <div class="section-actions">
+                        <button id="refresh-btn" class="btn btn-primary"><i>🔄</i> Refresh Data</button>
+                        <button id="spin-bonus" class="btn btn-primary"><i>🎰</i> Spin Bonus</button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card gold">
+                        <div class="stat-title">Total Players</div>
+                        <div class="stat-value">1,248</div>
+                        <div class="stat-change positive">↑ 12.5% (last 7 days)</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-title">Active Players</div>
+                        <div class="stat-value">784</div>
+                        <div class="stat-change positive">↑ 8.3% (last 7 days)</div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-title">Total Deposits</div>
+                        <div class="stat-value">$248,950</div>
+                        <div class="stat-change positive">↑ 22.1% (last 7 days)</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-title">Withdrawals</div>
+                        <div class="stat-value">$98,430</div>
+                        <div class="stat-change negative">↓ 3.2% (last 7 days)</div>
+                    </div>
+                </div>
+
+                <!-- Players Table -->
+                <div class="section-header">
+                    <h2 class="section-title">Recent Players</h2>
+                    <div class="section-actions">
+                        <button id="add-player-btn" class="btn btn-primary"><i>➕</i> Add Player</button>
+                    </div>
+                </div>
+                <table class="players-table">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Status</th>
+                            <th>Last Deposit</th>
+                            <th>Total Wagered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="players-table-body"></tbody>
+                </table>
+
+                <!-- Analytics Chart -->
+                <div class="analytics-chart">
+                    <div class="section-header">
+                        <h2 class="section-title">Deposits & Withdrawals</h2>
+                        <div class="section-actions">
+                            <select class="form-control">
+                                <option>Last 7 days</option>
+                                <option>Last 30 days</option>
+                                <option>Last 90 days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Player Modal -->
+    <div class="modal" id="add-player-modal">
+        <div class="modal-content">
+            <span class="close-modal">×</span>
+            <h2>Add New Player</h2>
+            <form id="player-form">
+                <div class="form-group">
+                    <label for="player-name">Full Name</label>
+                    <input type="text" id="player-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="player-email">Email</label>
+                    <input type="email" id="player-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="player-phone">Phone</label>
+                    <input type="tel" id="player-phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="player-country">Country</label>
+                    <select id="player-country" class="form-control">
+                        <option value="CA">Canada</option>
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="FR">France</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="player-language">Language</label>
+                    <select id="player-language" class="form-control">
+                        <option value="en">English</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="player-status">Status</label>
+                    <select id="player-status" class="form-control">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Player</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Chat -->
+    <div class="live-chat" id="live-chat">
+        <p>Chat with Support!</p>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon"></div>
+        <div class="notification-message"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
